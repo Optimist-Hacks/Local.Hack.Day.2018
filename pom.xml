@@ -39,13 +39,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.2</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${app.spring.version}</version>
@@ -71,9 +64,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.mylyn.github</groupId>
-            <artifactId>org.eclipse.egit.github.core</artifactId>
-            <version>2.1.5</version>
+            <groupId>org.vcsreader</groupId>
+            <artifactId>vcsreader</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>

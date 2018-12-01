@@ -10,5 +10,5 @@ import java.util.List;
 public interface EventRepository {
 
     @NonNull
-    List<Event> getEvents();
+    List<Event> getEvents(@NonNull String repoUrl);
 }
