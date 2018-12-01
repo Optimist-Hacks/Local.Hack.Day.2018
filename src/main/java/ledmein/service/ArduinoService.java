@@ -16,6 +16,11 @@ public class ArduinoService {
     private Arduino arduino;
 
     public void writeColor(Color color) {
+        int red = Math.max(1, color.getRed());
+        int green = Math.max(1, color.getGreen());
+        int blue = Math.max(1, color.getBlue());
+
+        color = new Color(red, green, blue);
         initArduino();
 
         if(arduino == null)
@@ -24,12 +29,12 @@ public class ArduinoService {
         logger.info("Start write color " + color);
         long timeStart = System.currentTimeMillis();
 
-//        String input = "" +
-//                (char) (color.getRed() << 8 + color.getGreen()) +
-//                (char) (color.getBlue() << 8 + color.getRed()) +
-//                (char) (color.getGreen() << 8 + color.getBlue());
+        String input = "" +
+                (char) (color.getRed() << 8 + color.getGreen()) +
+                (char) (color.getBlue() << 8 + color.getRed()) +
+                (char) (color.getGreen() << 8 + color.getBlue());
 
-        String input = "" + (byte)((color.getRed() *6/256)*36) + (byte)((color.getGreen()*6/256)*36) + (byte)((color.getBlue()*6/256)*36);
+//        String input = "" + (byte)((color.getRed() *6/256)*36) + (byte)((color.getGreen()*6/256)*36) + (byte)((color.getBlue()*6/256)*36);
 
         arduino.serialWrite(input);
 
