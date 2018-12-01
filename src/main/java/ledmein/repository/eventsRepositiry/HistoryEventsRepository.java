@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import ledmein.Token;
 import ledmein.deserializers.CommitDeserializer;
 import ledmein.deserializers.ForkDeserializer;
 import ledmein.deserializers.PullDeserializer;
@@ -81,19 +82,19 @@ public class HistoryEventsRepository extends BaseEventsRepository {
 
     @SneakyThrows
     private List<CommitEvent> getCommits(@NonNull String uriPrefix) {
-        return readFromRemote(buildUrl(uriPrefix, "/commits?access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<CommitEvent>>() {
+        return readFromRemote(buildUrl(uriPrefix, "/commits?access_token=" + Token.token), new TypeReference<List<CommitEvent>>() {
         });
     }
 
     @SneakyThrows
     private List<PullEvent> getPulls(@NonNull String uriPrefix) {
-        return readFromRemote(buildUrl(uriPrefix, "/pulls?state=all&access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<PullEvent>>() {
+        return readFromRemote(buildUrl(uriPrefix, "/pulls?state=all&access_token=" + Token.token), new TypeReference<List<PullEvent>>() {
         });
     }
 
     @SneakyThrows
     private List<ForkEvent> getForks(@NonNull String uriPrefix) {
-        return readFromRemote(buildUrl(uriPrefix, "/forks?access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<ForkEvent>>() {
+        return readFromRemote(buildUrl(uriPrefix, "/forks?access_token=" + Token.token), new TypeReference<List<ForkEvent>>() {
         });
     }
 }

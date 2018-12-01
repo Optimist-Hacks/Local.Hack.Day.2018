@@ -56,3 +56,7 @@ fabric.properties
 /logs/
 /ledmein.iml
 /.idea/
+
+target/
+src/main/java/ledmein/Token.java
+

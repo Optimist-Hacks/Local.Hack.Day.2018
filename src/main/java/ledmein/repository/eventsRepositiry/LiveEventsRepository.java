@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import ledmein.Token;
 import ledmein.deserializers.RepoEventDeserializer;
 import ledmein.model.Event;
 import ledmein.model.EventType;
@@ -62,7 +63,7 @@ public class LiveEventsRepository extends BaseEventsRepository {
     @SneakyThrows
     private List<RepoEvent> getRepoEvents(@NonNull String uriPrefix) {
         logger.info("call getRepoEvents");
-        return readFromRemote(buildUrl(uriPrefix, "/events?access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<RepoEvent>>() {
+        return readFromRemote(buildUrl(uriPrefix, "/events?access_token=" + Token.token), new TypeReference<List<RepoEvent>>() {
         });
     }
 
