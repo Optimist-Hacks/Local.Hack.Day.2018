@@ -11,6 +11,7 @@ import java.awt.*;
 public class ArduinoService {
 
     private static Logger logger = LoggerFactory.getLogger(ArduinoService.class);
+    private static final int SIZE = 2;
 
     private Arduino arduino;
 
@@ -20,7 +21,7 @@ public class ArduinoService {
         logger.info("Start write color " + color);
         long timeStart = System.currentTimeMillis();
 
-        String input = String.valueOf((char) 3) +
+        String input = "" +
                 (char) color.getRed() +
                 (char) color.getGreen() +
                 (char) color.getBlue();
@@ -34,7 +35,9 @@ public class ArduinoService {
         if (arduino == null) {
             arduino = new Arduino("/dev/ttyUSB0", 115200);
             boolean connected = arduino.openConnection();
-            System.out.println("Arduino connected: " + connected);
+            logger.info("Arduino connected: " + connected + ". Start write size to arduino" + SIZE);
+            arduino.serialWrite((char) SIZE);
+            logger.info("End write size to arduino");
         }
     }
 

@@ -2,6 +2,7 @@ package ledmein.controller;
 
 import io.reactivex.Observable;
 import ledmein.repository.eventRepositiry.DefaultEventRepository;
+import ledmein.service.ArduinoService;
 import ledmein.service.EventToLightTransformerService;
 import ledmein.service.EventToLightTransformerServiceImpl;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ public class TestController {
 
     private DefaultEventRepository repository;
     private EventToLightTransformerServiceImpl service;
+    private ArduinoService arduinoService;
 
     @Autowired
     public TestController(DefaultEventRepository repository, EventToLightTransformerServiceImpl service) {
@@ -41,7 +43,7 @@ public class TestController {
 
     @GetMapping("/test_github")
     public String testGithub(HttpServletRequest request) {
-        logger.info("New testGithub request");
+        logger.info("New test Github request");
         List<Color> colors = Observable.fromIterable(repository.getEvents("square", "okhttp"))
                 .map(event -> service.transformToRGB(event))
                 .toList()
@@ -51,6 +53,16 @@ public class TestController {
         logger.info("Send data " + inputData);
         request.setAttribute("rgb", inputData);
         return "rgb";
+    }
+
+    @GetMapping("/test_arduino")
+    public void testArduino() {
+        logger.info("New test Arduino request");
+        List<Color> colors = EventToLightTransformerService.randomLightsList(50);
+        for (Color color : colors) {
+            arduinoService.writeColor(color);
+        }
+        logger.info("End Arduino test");
     }
 
     static int[][] transformToString(List<Color> list) {
