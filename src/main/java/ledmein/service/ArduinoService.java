@@ -64,14 +64,25 @@ public class ArduinoService {
         logger.info("Start write color " + color);
         long timeStart = System.currentTimeMillis();
 
-        String input = "" +
-                (char) (color.getRed() << 8 + color.getGreen()) +
-                (char) (color.getBlue() << 8 + color.getRed()) +
-                (char) (color.getGreen() << 8 + color.getBlue());
+        byte[] bytes = new byte[] {
+                (byte) color.getRed(),
+                (byte) color.getGreen(),
+                (byte) color.getBlue(),
+                (byte) color.getRed(),
+                (byte) color.getGreen(),
+                (byte) color.getBlue()
+        };
+
+
+
+//        String input = "" +
+//                (char) (color.getRed() << 8 + color.getGreen()) +
+//                (char) (color.getBlue() << 8 + color.getRed()) +
+//                (char) (color.getGreen() << 8 + color.getBlue());
 
 //        String input = "" + (byte)((color.getRed() *6/256)*36) + (byte)((color.getGreen()*6/256)*36) + (byte)((color.getBlue()*6/256)*36);
 
-        arduino.serialWrite(input);
+        arduino.serialWrite(new String(bytes));
 
         long timeEnd = System.currentTimeMillis();
         logger.info("End write color. Takes " + (timeStart - timeEnd) + "ms");
