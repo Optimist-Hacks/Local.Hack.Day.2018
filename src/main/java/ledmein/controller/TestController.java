@@ -21,14 +21,15 @@ public class TestController {
 
     private static Logger logger = LoggerFactory.getLogger(TestController.class);
 
-    private DefaultEventRepository repository;
-    private EventToLightTransformerServiceImpl service;
-    private ArduinoService arduinoService;
+    private final DefaultEventRepository repository;
+    private final EventToLightTransformerServiceImpl service;
+    private final ArduinoService arduinoService;
 
     @Autowired
-    public TestController(DefaultEventRepository repository, EventToLightTransformerServiceImpl service) {
+    public TestController(DefaultEventRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
         this.repository = repository;
         this.service = service;
+        this.arduinoService = arduinoService;
     }
 
     @GetMapping("/test")
