@@ -15,7 +15,7 @@
 <body>
 <div class="jumbotron jumbotron-fullheight jumbo-vertical-center text-light text-center bg-dark mb-0 radius-0">
     <div class="container">
-        <h3>Login Form</h3>
+        <h3 class="display-2 text-light text-uppercase">Choose the Repo to set on fire!</h3>
         <%
             String profile_msg = (String) request.getAttribute("profile_msg");
             if (profile_msg != null) {
@@ -28,9 +28,9 @@
         %>
         <br/>
         <form action="/lightitup" method="get">
-            Username:<input type="text" name="login"/><br/><br/>
-            Repository:<input type="text" name="repo"/><br/><br/>
-            <input type="submit" value="light"/>
+            <span class="lead lead-lg">Username: </span><input class="lead lead-lg" type="text" name="login"/><br/><br/>
+            <span class="lead lead-lg">Repository: </span><input class="lead lead-lg" type="text" name="repo"/><br/><br/>
+            <input class="btn btn-danger btn-lg m-2 btn-wide" type="submit" value="Light It Up!"/>
         </form>
     </div>
 </div>
