@@ -1,7 +1,9 @@
 package ledmein.controller;
 
+import ledmein.repository.DefaultEventRepository;
 import ledmein.repository.EventRepository;
 import ledmein.service.EventToLightTransformerService;
+import ledmein.service.EventToLightTransformerServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class LedController {
 
     private static Logger logger = LoggerFactory.getLogger(LedController.class);
-    private EventRepository repository;
-    private EventToLightTransformerService service;
+    private DefaultEventRepository repository;
+    private EventToLightTransformerServiceImpl service;
 
     @Autowired
-    public LedController(EventRepository repository, EventToLightTransformerService service) {
+    public LedController(DefaultEventRepository repository, EventToLightTransformerServiceImpl service) {
         this.repository = repository;
         this.service = service;
     }
