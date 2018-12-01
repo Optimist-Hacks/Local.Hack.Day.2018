@@ -1,36 +1,79 @@
 package ledmein.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import ledmein.deserializers.CommitDeserializer;
+import ledmein.model.Commit;
 import ledmein.model.Event;
 import ledmein.model.EventType;
 import lombok.NonNull;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Method;
-import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Repository
 public class DefaultEventRepository implements EventRepository {
 
-    OkHttp3ClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory();
+    private static Logger logger = LoggerFactory.getLogger(DefaultEventRepository.class);
 
     @Override
     public List<Event> getEvents(@NonNull String ownerUsername, @NonNull String repoName) {
+        String uriPrefix = "https://api.github.com/repos/" + ownerUsername + "/" + repoName;
 
 
-        List<Event> events = new ArrayList<>();
+        List<EventWrapper> eventWrappers = new ArrayList<>();
 
-        events.add(new Event("sanekyy", EventType.COMMIT));
+        eventWrappers.addAll(getCommits(uriPrefix));
+        eventWrappers.addAll(getPulls(uriPrefix));
 
-        return events;
+
+
+        return eventWrappers.stream()
+                .sorted((a, b) -> (int) (a.eventTime - b.eventTime))
+                .map(eventWrapper -> eventWrapper.event)
+                .collect(Collectors.toList());
     }
 
-    private void getCommits(@NonNull String repoUrl) {
+    @SneakyThrows
+    public List<EventWrapper> getCommits(@NonNull String uriPrefix) {
+        logger.info("Start read commits");
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Commit.class, new CommitDeserializer());
+        mapper.registerModule(module);
 
-        requestFactory.createRequest(
-                URI.create("https://api.github.com/repos/square/okhttp/commits"),
-                HttpMethod.GET
-        );
+        List<Commit> commits = mapper.readValue(new URL(uriPrefix + "/commits"), new TypeReference<List<Commit>>() {
+        });
+
+        logger.info("End read commits: " + commits);
+
+        return commits.stream()
+                .map(commit -> new EventWrapper(new Event("AUTHOR", EventType.COMMIT), commit.time))
+                .collect(Collectors.toList());
+    }
+
+    @SneakyThrows
+    public List<EventWrapper> getPulls(@NonNull String uriPrefix) {
+        logger.info("Start read pulls");
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Commit.class, new PullsDeserializer());
+        mapper.registerModule(module);
+
+        List<Pulls> pulls = mapper.readValue(new URL(uriPrefix + "/pulls?status=all"), new TypeReference<List<Commit>>() {
+        });
+
+        logger.info("End read pulls: " + commits);
+
+        return commits.stream()
+                .map(commit -> new EventWrapper(new Event("AUTHOR", EventType.COMMIT), commit.time))
+                .collect(Collectors.toList());
     }
 }
