@@ -31,12 +31,4 @@ public interface EventToLightTransformerService {
         return list;
     }
 
-//    static int[][] transformToString(List<RGB> list) {
-//        int[][] array = new int[list.size()][3];
-//        for (int i = 0; i < list.size(); i++) {
-//            RGB rgb = list.get(i);
-//            array[i] = rgb.getValues();
-//        }
-//        return array;
-//    }
 }
