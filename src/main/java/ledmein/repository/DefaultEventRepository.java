@@ -46,7 +46,7 @@ public class DefaultEventRepository implements EventRepository {
 
         return Observable.fromIterable(eventWrappers)
                 .sorted(Comparator.comparingLong(o -> o.eventTime))
-                .map(gitHubEvent -> new Event("sashka", gitHubEvent.eventType))
+                .map(gitHubEvent -> new Event(gitHubEvent.author, gitHubEvent.eventType))
                 .toList()
                 .blockingGet();
     }

@@ -8,5 +8,6 @@ public class GitHubEvent {
 
     public long eventTime;
     public EventType eventType;
+    public String author;
 
 }

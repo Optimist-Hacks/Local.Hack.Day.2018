@@ -23,7 +23,9 @@ public class PullDeserializer extends StdDeserializer<PullEvent> {
     public PullEvent deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         JsonNode date = node.get("created_at");
-        return new PullEvent(Dates.formatDate(date.asText()));
+        JsonNode user = node.get("user");
+        JsonNode login = user.get("login");
+        return new PullEvent(Dates.formatDate(date.asText()), login.asText());
     }
 
 }

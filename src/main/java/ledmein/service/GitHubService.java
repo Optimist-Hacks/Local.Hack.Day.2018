@@ -1,10 +1,12 @@
 package ledmein.service;
 
+import ledmein.model.Event;
 import ledmein.repository.DefaultEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Service
 public class GitHubService {
@@ -18,7 +20,9 @@ public class GitHubService {
 
     @PostConstruct
     public void post() {
-        defaultEventRepository.getEvents("polis-mail-ru", "2018-highload-kv");
+        List<Event> events = defaultEventRepository.getEvents("square", "okhttp");
+
+        events.size();
     }
 
 }

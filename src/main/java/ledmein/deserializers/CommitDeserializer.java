@@ -23,9 +23,11 @@ public class CommitDeserializer extends StdDeserializer<CommitEvent> {
     public CommitEvent deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         JsonNode commit = node.get("commit");
-        JsonNode author = commit.get("author");
-        JsonNode date = author.get("date");
-        return new CommitEvent(Dates.formatDate(date.asText()));
+        JsonNode commitAuthor = commit.get("author");
+        JsonNode date = commitAuthor.get("date");
+        JsonNode author = node.get("author");
+        JsonNode login = author.get("login");
+        return new CommitEvent(Dates.formatDate(date.asText()), login.asText());
     }
 
 }
