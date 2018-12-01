@@ -1,5 +1,6 @@
 package ledmein.controller;
 
+import io.reactivex.Observable;
 import ledmein.repository.eventRepositiry.DefaultEventRepository;
 import ledmein.service.EventToLightTransformerService;
 import ledmein.service.EventToLightTransformerServiceImpl;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class TestController {
@@ -41,7 +42,11 @@ public class TestController {
     @GetMapping("/test_github")
     public String testGithub(HttpServletRequest request) {
         logger.info("New testGithub request");
-        int[][] data = transformToString(service.transformToRGB(repository.getEvents("square", "okhttp")));
+        List<Color> colors = Observable.fromIterable(repository.getEvents("square", "okhttp"))
+                .map(event -> service.transformToRGB(event))
+                .toList()
+                .blockingGet();
+        int[][] data = transformToString(colors);
         String inputData = Arrays.deepToString(data);
         logger.info("Send data " + inputData);
         request.setAttribute("rgb", inputData);
