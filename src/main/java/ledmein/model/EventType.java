@@ -7,6 +7,7 @@ public enum EventType {
     PUSH,
     ISSUE,
     IGNORE,
+    BUILD_STARTED,
     BUILD_SUCCESS,
     BUILD_FAILED
 }

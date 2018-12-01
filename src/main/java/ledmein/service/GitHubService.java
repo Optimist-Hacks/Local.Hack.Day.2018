@@ -1,9 +1,6 @@
 package ledmein.service;
 
-import ledmein.repository.eventsRepositiry.EventsRepository;
-import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
-import ledmein.repository.eventsRepositiry.LiveEventsRepository;
-import ledmein.repository.eventsRepositiry.TravisEventsRepository;
+import ledmein.repository.eventsRepositiry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +18,7 @@ public class GitHubService {
     private final EventsRepository eventsRepository;
 
     @Autowired
-    public GitHubService(TravisEventsRepository eventsRepository) {
+    public GitHubService(TravisAndLiveEventsRepository eventsRepository) {
         this.eventsRepository = eventsRepository;
     }
 

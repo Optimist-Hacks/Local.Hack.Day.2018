@@ -24,6 +24,7 @@ public class TravisEventsRepository extends BaseEventsRepository {
     private static Logger logger = LoggerFactory.getLogger(TravisEventsRepository.class);
 
     int lastBuild;
+    String buildState;
     private OkHttpClient client = new OkHttpClient();
 
     public TravisEventsRepository() {
@@ -46,11 +47,17 @@ public class TravisEventsRepository extends BaseEventsRepository {
         Observable.interval(period, unit)
                 .subscribeOn(Schedulers.io())
                 .map(aLong -> getTravisEvent(path))
-                .filter(travisEvent -> lastBuild < travisEvent.getBuildNumber())
+                .filter(travisEvent -> lastBuild < travisEvent.getBuildNumber() || !RocketText.safeEqualsIgnoreCase(buildState, travisEvent.getBuildState()))
                 .map(travisEvent -> {
                     lastBuild = travisEvent.getBuildNumber();
-                    boolean failed = RocketText.safeEqualsIgnoreCase(travisEvent.getBuildState(), "errored");
-                    return new Event("build", failed ? EventType.BUILD_FAILED : EventType.BUILD_SUCCESS);
+                    buildState = travisEvent.getBuildState();
+                    EventType type = EventType.BUILD_FAILED;
+                    if (RocketText.safeEqualsIgnoreCase(travisEvent.getBuildState(), "started")) {
+                        type = EventType.BUILD_STARTED;
+                    } else if (!RocketText.safeEqualsIgnoreCase(travisEvent.getBuildState(), "errored")) {
+                        type = EventType.BUILD_SUCCESS;
+                    }
+                    return new Event("build", type);
                 })
                 .doOnNext(onNextEvent::onNext)
                 .subscribe();

@@ -22,6 +22,8 @@ public class EventToLightTransformerServiceImpl implements EventToLightTransform
                 return getPersonalColor(event);
             case PULL_REQUEST:
                 return PULL_COLOR;
+            case BUILD_STARTED:
+                return BUILD_STARTED_COLOR;
             case BUILD_FAILED:
                 return BUILD_FAILED_COLOR;
             case BUILD_SUCCESS:
