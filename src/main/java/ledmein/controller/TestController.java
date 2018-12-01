@@ -1,8 +1,8 @@
 package ledmein.controller;
 
-import io.reactivex.Observable;
 import ledmein.repository.eventsRepositiry.EventsRepository;
 import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
+import ledmein.repository.eventsRepositiry.TravisAndLiveEventsRepository;
 import ledmein.service.ArduinoService;
 import ledmein.service.EventToLightTransformerService;
 import ledmein.service.EventToLightTransformerServiceImpl;
@@ -26,12 +26,15 @@ public class TestController {
     private final EventsRepository repository;
     private final EventToLightTransformerServiceImpl service;
     private final ArduinoService arduinoService;
+    private final EventsRepository eventsRepository;
 
     @Autowired
-    public TestController(HistoryEventsRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
+    public TestController(HistoryEventsRepository repository, EventToLightTransformerServiceImpl service,
+                          ArduinoService arduinoService, TravisAndLiveEventsRepository eventsRepository) {
         this.repository = repository;
         this.service = service;
         this.arduinoService = arduinoService;
+        this.eventsRepository = eventsRepository;
     }
 
     @GetMapping("/test")
@@ -61,11 +64,11 @@ public class TestController {
     @GetMapping("/test_arduino")
     public void testArduino() {
         logger.info("New test Arduino request");
-        List<Color> colors = EventToLightTransformerService.randomLightsList(50);
-        for (Color color : colors) {
-            arduinoService.writeColor(color);
-        }
-        logger.info("End Arduino test");
+
+        eventsRepository.onNextEvent("otopba", "TcTest", 5, TimeUnit.SECONDS)
+                .map(service::transformToRGB)
+                .doOnNext(arduinoService::writeColor)
+                .subscribe();
     }
 
     static int[][] transformToString(List<Color> list) {

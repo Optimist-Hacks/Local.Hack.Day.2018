@@ -22,12 +22,12 @@ public class GitHubService {
         this.eventsRepository = eventsRepository;
     }
 
-    @PostConstruct
-    public void post() {
-        eventsRepository.onNextEvent("otopba", "TcTest", 5, TimeUnit.SECONDS)
+//    @PostConstruct
+//    public void post() {
+//        eventsRepository.onNextEvent("otopba", "TcTest", 5, TimeUnit.SECONDS)
 //        eventsRepository.onNextEvent("AbramovGA", "epam-lab-java8-2018-09", 100, TimeUnit.MILLISECONDS)
-                .doOnNext(event -> logger.info(event.toString()))
-                .subscribe();
-    }
+//                .doOnNext(event -> logger.info(event.toString()))
+//                .subscribe();
+//    }
 
 }
