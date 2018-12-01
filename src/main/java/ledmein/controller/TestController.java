@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class TestController {
@@ -46,14 +47,14 @@ public class TestController {
     @GetMapping("/test_github")
     public String testGithub(HttpServletRequest request) {
         logger.info("New test Github request");
-//        List<Color> colors = Observable.fromIterable(repository.onNextEvent("square", "okhttp"))
-//                .map(event -> service.transformToRGB(event))
-//                .toList()
-//                .blockingGet();
-//        int[][] data = transformToString(colors);
-//        String inputData = Arrays.deepToString(data);
-//        logger.info("Send data " + inputData);
-//        request.setAttribute("rgb", inputData);
+        List<Color> colors = repository.onNextEvent("square", "okhttp", 0, TimeUnit.SECONDS)
+                .map(service::transformToRGB)
+                .toList()
+                .blockingGet();
+        int[][] data = transformToString(colors);
+        String inputData = Arrays.deepToString(data);
+        logger.info("Send data " + inputData);
+        request.setAttribute("rgb", inputData);
         return "rgb";
     }
 
