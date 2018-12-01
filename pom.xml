@@ -52,6 +52,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>9.0.10</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.otopba</groupId>
             <artifactId>JavaRocketStart</artifactId>
             <version>0.05</version>
