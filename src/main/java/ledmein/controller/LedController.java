@@ -1,14 +1,10 @@
 package ledmein.controller;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import ledmein.model.Event;
-import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
 import ledmein.repository.eventsRepositiry.EventsRepository;
 import ledmein.repository.eventsRepositiry.TravisAndLiveEventsRepository;
 import ledmein.service.ArduinoService;
 import ledmein.service.EventToLightTransformerServiceImpl;
-import ledmein.util.Lights;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +49,8 @@ public class LedController {
         onNextEventDisposable = repository.onNextEvent(login, repo, 1, TimeUnit.SECONDS)
                 .doOnNext(event -> logger.info("Receive event in LedController: " + event.toString()))
                 .doOnNext(event -> logger.info(event.toString()))
-//                .map(service::transformToRGB)
-//
-//                .doOnNext(arduinoService::writeColor)
-                .doOnNext(event -> arduinoService.writeEvent(event.getEventType()))
-//                .doOnNext(event -> logger.info(event.toString()))
-//                .doOnComplete(()->arduinoService.writeColor(Lights.HISTORY_END_COLOR))
+                .map(service::transformToRGB)
+                .doOnNext(event -> arduinoService.writeEvent(event))
                 .subscribe();
         return "welldone";
     }
