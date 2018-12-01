@@ -1,8 +1,7 @@
-package ledmein.repository.model;
+package ledmein.model.github;
 
 
 import ledmein.model.EventType;
-import ledmein.repository.GitHubEvent;
 
 public class CommitEvent extends GitHubEvent {
 
