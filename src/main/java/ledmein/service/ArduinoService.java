@@ -25,12 +25,9 @@ public class ArduinoService {
         long timeStart = System.currentTimeMillis();
 
         String input = "" +
-                (char) color.getRed() +
-                (char) color.getGreen() +
-                (char) color.getBlue() +
-                (char) color.getRed() +
-                (char) color.getGreen() +
-                (char) color.getBlue();
+                (char) (color.getRed() << 8 + color.getGreen()) +
+                (char) (color.getBlue() << 8 + color.getRed()) +
+                (char) (color.getGreen() << 8 + color.getBlue());
         arduino.serialWrite(input);
 
         long timeEnd = System.currentTimeMillis();
