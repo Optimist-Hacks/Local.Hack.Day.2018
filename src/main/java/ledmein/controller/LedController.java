@@ -49,7 +49,7 @@ public class LedController {
         }
 
         onNextEventDisposable = repository.onNextEvent(login, repo)
-                .map(service::transformOne)
+                .map(service::transformToRGB)
                 .subscribe();
     }
 

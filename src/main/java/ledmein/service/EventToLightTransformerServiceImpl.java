@@ -1,15 +1,11 @@
 package ledmein.service;
 
 import ledmein.model.Event;
-import ledmein.repository.authorToColorRepository.AuthorsColorsRepository;
 import ledmein.repository.authorToColorRepository.DefaultAuthorsColorsRepository;
-import ledmein.util.Lights;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static ledmein.util.Lights.*;
 
@@ -20,14 +16,7 @@ public class EventToLightTransformerServiceImpl implements EventToLightTransform
     DefaultAuthorsColorsRepository authorsColorsRepo;
 
     @Override
-    public List<Color> transformToRGB(List<Event> events) {
-        return events.stream()
-                .map(this::transformOne)
-                .collect(Collectors.toList());
-    }
-
-
-    public Color transformOne(Event event) {
+    public Color transformToRGB(Event event) {
         switch (event.getEventType()) {
             case COMMIT:
                 return getPersonalColor(event);
@@ -36,7 +25,6 @@ public class EventToLightTransformerServiceImpl implements EventToLightTransform
         }
         return DEFAULT_COLOR;
     }
-
 
     private Color getPersonalColor(Event event) {
         return authorsColorsRepo.getColorByAuthor(event.getAuthor());

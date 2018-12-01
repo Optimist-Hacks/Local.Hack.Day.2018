@@ -6,17 +6,13 @@ import org.springframework.stereotype.Service;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ledmein.util.Lights.getRandomLight;
 
 @Service
 public interface EventToLightTransformerService {
-    default List<Color> transformToRGB(List<Event> events) {
-        return events
-                .stream()
-                .map(EventToLightTransformerService::transformOne)
-                .collect(Collectors.toList());
+    default Color transformToRGB(Event event) {
+        return transformOne(event);
     }
 
     static Color transformOne(Event event) {
@@ -30,5 +26,4 @@ public interface EventToLightTransformerService {
         }
         return list;
     }
-
 }
