@@ -5,6 +5,7 @@ import ledmein.repository.eventRepositiry.DefaultEventRepository;
 import ledmein.repository.eventRepositiry.EventRepository;
 import ledmein.service.ArduinoService;
 import ledmein.service.EventToLightTransformerServiceImpl;
+import ledmein.util.Lights;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ public class LedController {
         onNextEventDisposable = repository.onNextEvent(login, repo)
                 .map(service::transformToRGB)
                 .doOnNext(arduinoService::writeColor)
+                .doOnComplete(()->arduinoService.writeColor(Lights.HISTORY_END_COLOR))
                 .subscribe();
     }
 

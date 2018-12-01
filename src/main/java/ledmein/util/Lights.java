@@ -11,6 +11,7 @@ public interface Lights {
     Color DEFAULT_COLOR = Color.white;
     Color PULL_COLOR = Color.red;
     Color COMMIT_COLOR = Color.green;
+    Color HISTORY_END_COLOR = Color.blue;
 
     Random random = new Random();
     static Color getRandomLight() {
