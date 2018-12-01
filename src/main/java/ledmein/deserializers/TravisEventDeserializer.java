@@ -23,7 +23,7 @@ public class TravisEventDeserializer extends StdDeserializer<TravisEvent> {
         JsonNode node = jp.getCodec().readTree(jp);
         JsonNode repo = node.get("repo");
         JsonNode buildState = repo.get("last_build_state");
-        JsonNode buildNumber = node.get("last_build_number");
+        JsonNode buildNumber = repo.get("last_build_number");
 
         return new TravisEvent(buildState.asText(), buildNumber.asInt());
     }

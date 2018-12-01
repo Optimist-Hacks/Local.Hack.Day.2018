@@ -7,10 +7,15 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import ledmein.Dates;
 import ledmein.model.EventType;
 import ledmein.model.github.RepoEvent;
+import ledmein.repository.eventsRepositiry.LiveEventsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class RepoEventDeserializer extends StdDeserializer<RepoEvent> {
+
+    private static Logger logger = LoggerFactory.getLogger(RepoEventDeserializer.class);
 
     public RepoEventDeserializer() {
         this(null);
