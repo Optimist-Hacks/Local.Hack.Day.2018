@@ -18,6 +18,9 @@ public class ArduinoService {
     public void writeColor(Color color) {
         initArduino();
 
+        if(arduino == null)
+            return;
+
         logger.info("Start write color " + color);
         long timeStart = System.currentTimeMillis();
 
@@ -33,11 +36,16 @@ public class ArduinoService {
 
     private void initArduino() {
         if (arduino == null) {
-            arduino = new Arduino("/dev/ttyUSB0", 115200);
-            boolean connected = arduino.openConnection();
-            logger.info("Arduino connected: " + connected + ". Start write size to arduino" + SIZE);
-            arduino.serialWrite((char) SIZE);
-            logger.info("End write size to arduino");
+            try {
+                arduino = new Arduino("/dev/ttyUSB0", 115200);
+                boolean connected = arduino.openConnection();
+                logger.info("Arduino connected: " + connected + ". Start write size to arduino" + SIZE);
+                arduino.serialWrite((char) SIZE);
+                logger.info("End write size to arduino");
+            } catch (Exception e) {
+                logger.info("Fail to connect to Arduino");
+                arduino = null;
+            }
         }
     }
 

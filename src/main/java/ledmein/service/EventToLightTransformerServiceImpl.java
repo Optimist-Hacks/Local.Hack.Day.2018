@@ -2,6 +2,7 @@ package ledmein.service;
 
 import ledmein.model.Event;
 import ledmein.repository.authorToColorRepository.DefaultAuthorsColorsRepository;
+import ledmein.util.Lights;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,10 @@ public class EventToLightTransformerServiceImpl implements EventToLightTransform
                 return getPersonalColor(event);
             case PULL_REQUEST:
                 return PULL_COLOR;
+            case PUSH:
+                return Lights.PUSH_COLOR;
+            case FORK:
+                return Lights.FORK_COLOR;
             case BUILD_STARTED:
                 return BUILD_STARTED_COLOR;
             case BUILD_FAILED:

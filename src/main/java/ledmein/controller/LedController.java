@@ -3,6 +3,7 @@ package ledmein.controller;
 import io.reactivex.disposables.Disposable;
 import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
 import ledmein.repository.eventsRepositiry.EventsRepository;
+import ledmein.repository.eventsRepositiry.TravisAndLiveEventsRepository;
 import ledmein.service.ArduinoService;
 import ledmein.service.EventToLightTransformerServiceImpl;
 import ledmein.util.Lights;
@@ -28,7 +29,7 @@ public class LedController {
     private Disposable onNextEventDisposable;
 
     @Autowired
-    public LedController(HistoryEventsRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
+    public LedController(TravisAndLiveEventsRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
         this.repository = repository;
         this.service = service;
         this.arduinoService = arduinoService;
@@ -41,17 +42,21 @@ public class LedController {
     }
 
     @GetMapping("/lightitup")
-    public void lightItUp(@RequestParam String login, @RequestParam String repo){
+    public String lightItUp(@RequestParam String login, @RequestParam String repo){
         if(onNextEventDisposable != null){
             onNextEventDisposable.dispose();
             onNextEventDisposable = null;
         }
 
-        onNextEventDisposable = repository.onNextEvent(login, repo, 1, TimeUnit.SECONDS)
+        onNextEventDisposable = repository.onNextEvent(login, repo, 5, TimeUnit.SECONDS)
+                .doOnNext(event -> logger.info(event.toString()))
                 .map(service::transformToRGB)
+
                 .doOnNext(arduinoService::writeColor)
-                .doOnComplete(()->arduinoService.writeColor(Lights.HISTORY_END_COLOR))
+                .doOnNext(event -> logger.info(event.toString()))
+//                .doOnComplete(()->arduinoService.writeColor(Lights.HISTORY_END_COLOR))
                 .subscribe();
+        return "welldone";
     }
 
     @GetMapping("")
