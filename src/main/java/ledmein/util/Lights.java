@@ -1,6 +1,6 @@
 package ledmein.util;
 
-import ledmein.model.RGB;
+import com.sun.xml.internal.bind.v2.runtime.Coordinator;
 
 import java.awt.*;
 import java.util.Random;
@@ -8,16 +8,17 @@ import java.util.Random;
 public interface Lights {
 
 
-    Color pushColor = Color.red;
-    Color commitColor = Color.green;
+    Color DEFAULT_COLOR = Color.white;
+    Color PULL_COLOR = Color.red;
+    Color COMMIT_COLOR = Color.green;
 
     Random random = new Random();
-    static RGB getRandomLight() {
-        return new RGB(new int[]{
+    static Color getRandomLight() {
+        return new Color(
                 random.nextInt(256),
                 random.nextInt(256),
                 random.nextInt(256)
-        });
+        );
     }
 
 }

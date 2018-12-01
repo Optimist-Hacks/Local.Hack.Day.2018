@@ -34,6 +34,5 @@ public class LedController {
     @GetMapping
     public void lightItUp(@PathVariable String login, @PathVariable String repo){
         service.transformToRGB(repository.getEvents(login, repo));
-
     }
 }
