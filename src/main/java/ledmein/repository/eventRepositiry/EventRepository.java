@@ -1,5 +1,6 @@
 package ledmein.repository.eventRepositiry;
 
+import io.reactivex.Observable;
 import ledmein.model.Event;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
@@ -10,5 +11,5 @@ import java.util.List;
 public interface EventRepository {
 
     @NonNull
-    List<Event> getEvents(@NonNull String ownerUsername, @NonNull String repoName);
+    Observable<Event> onNextEvent(@NonNull String ownerUsername, @NonNull String repoName);
 }

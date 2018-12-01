@@ -27,7 +27,7 @@ public class EventToLightTransformerServiceImpl implements EventToLightTransform
     }
 
 
-    private Color transformOne(Event event) {
+    public Color transformOne(Event event) {
         switch (event.getEventType()) {
             case COMMIT:
                 return getPersonalColor(event);
