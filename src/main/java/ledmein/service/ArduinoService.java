@@ -27,6 +27,9 @@ public class ArduinoService {
         String input = "" +
                 (char) color.getRed() +
                 (char) color.getGreen() +
+                (char) color.getBlue() +
+                (char) color.getRed() +
+                (char) color.getGreen() +
                 (char) color.getBlue();
         arduino.serialWrite(input);
 
