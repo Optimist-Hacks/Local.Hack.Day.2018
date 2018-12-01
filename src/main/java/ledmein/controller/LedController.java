@@ -53,16 +53,11 @@ public class LedController {
         onNextEventDisposable = repository.onNextEvent(login, repo, 1, TimeUnit.SECONDS)
                 .doOnNext(event -> logger.info("Receive event in LedController: " + event.toString()))
                 .doOnNext(event -> logger.info(event.toString()))
-                .map(service::transformToRGB)
-
-                .doOnNext(arduinoService::writeColor)
-//                .doOnNext(new Consumer<Event>() {
-//                    @Override
-//                    public void accept(Event event) throws Exception {
-//                        arduinoService.writeEvent(event.getEventType());
-//                    }
-//                })
-                .doOnNext(event -> logger.info(event.toString()))
+//                .map(service::transformToRGB)
+//
+//                .doOnNext(arduinoService::writeColor)
+                .doOnNext(event -> arduinoService.writeEvent(event.getEventType()))
+//                .doOnNext(event -> logger.info(event.toString()))
 //                .doOnComplete(()->arduinoService.writeColor(Lights.HISTORY_END_COLOR))
                 .subscribe();
         return "welldone";

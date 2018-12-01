@@ -17,37 +17,38 @@ public class ArduinoService {
     private Arduino arduino;
 
     public void writeEvent(EventType eventType){
-        byte res = 1;
+        initArduino();
+        char res = '1';
         switch (eventType) {
             case COMMIT:
-                res = 9;
+                res = '9';
                 break;
             case PULL_REQUEST:
-                res = 1;
+                res = '1';
                 break;
             case FORK:
-                res = 2;
+                res = '2';
                 break;
             case PUSH:
-                res = 3;
+                res = '3';
                 break;
             case ISSUE:
-                res = 4;
+                res = '4';
                 break;
             case IGNORE:
-                res = 5;
+                res = '5';
                 break;
             case BUILD_STARTED:
-                res = 6;
+                res = '6';
                 break;
             case BUILD_SUCCESS:
-                res = 7;
+                res = '7';
                 break;
             case BUILD_FAILED:
-                res = 8;
+                res = '8';
                 break;
         }
-        arduino.serialWrite((char) res);
+        arduino.serialWrite(res);
     }
 
     public void writeColor(Color color) {
