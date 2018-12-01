@@ -6,7 +6,7 @@ import ledmein.model.EventType;
 public class PullEvent extends GitHubEvent {
 
     public PullEvent(long eventTime, String author) {
-        super(eventTime, EventType.PULL, author);
+        super(eventTime, EventType.PULL_REQUEST, author);
     }
 
 }

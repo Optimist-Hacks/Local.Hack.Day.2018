@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +29,7 @@ public class HistoryEventsRepository extends BaseEventsRepository {
 
     private static Logger logger = LoggerFactory.getLogger(HistoryEventsRepository.class);
 
-    int currentEventIndex;
+    private int currentEventIndex;
 
     @NonNull
     private List<Event> events;
@@ -82,33 +81,19 @@ public class HistoryEventsRepository extends BaseEventsRepository {
 
     @SneakyThrows
     private List<CommitEvent> getCommits(@NonNull String uriPrefix) {
-        return readFromRemote(buildUrl(uriPrefix, "/commits"), new TypeReference<List<CommitEvent>>() {
+        return readFromRemote(buildUrl(uriPrefix, "/commits?access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<CommitEvent>>() {
         });
     }
 
     @SneakyThrows
     private List<PullEvent> getPulls(@NonNull String uriPrefix) {
-        return readFromRemote(buildUrl(uriPrefix, "/pulls?state=all"), new TypeReference<List<PullEvent>>() {
+        return readFromRemote(buildUrl(uriPrefix, "/pulls?state=all&access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<PullEvent>>() {
         });
     }
 
     @SneakyThrows
     private List<ForkEvent> getForks(@NonNull String uriPrefix) {
-        return readFromRemote(buildUrl(uriPrefix, "/forks"), new TypeReference<List<ForkEvent>>() {
+        return readFromRemote(buildUrl(uriPrefix, "/forks?access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<ForkEvent>>() {
         });
     }
-
-    @SneakyThrows
-    private <T> List<T> readFromRemote(URL url, TypeReference<List<T>> typeReference) {
-        logger.info("Start read " + url);
-        List<T> list = mapper.readValue(url, typeReference);
-        logger.info("End read " + url);
-        return list;
-    }
-
-    @SneakyThrows
-    private URL buildUrl(String uriPrefix, String address) {
-        return new URL(uriPrefix + address);
-    }
-
 }

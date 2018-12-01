@@ -1,26 +1,19 @@
 package ledmein.repository.eventsRepositiry;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.reactivex.Observable;
-import ledmein.deserializers.CommitDeserializer;
-import ledmein.deserializers.ForkDeserializer;
-import ledmein.deserializers.PullDeserializer;
+import io.reactivex.schedulers.Schedulers;
+import ledmein.deserializers.RepoEventDeserializer;
 import ledmein.model.Event;
-import ledmein.model.github.CommitEvent;
-import ledmein.model.github.ForkEvent;
-import ledmein.model.github.GitHubEvent;
-import ledmein.model.github.PullEvent;
+import ledmein.model.EventType;
+import ledmein.model.github.RepoEvent;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,14 +21,12 @@ import java.util.concurrent.TimeUnit;
 public class LiveEventsRepository extends BaseEventsRepository {
 
     private static Logger logger = LoggerFactory.getLogger(LiveEventsRepository.class);
-    private final ObjectMapper mapper;
+
+    long lastUpdatedTime;
 
     public LiveEventsRepository() {
-        mapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
-        module.addDeserializer(CommitEvent.class, new CommitDeserializer());
-        module.addDeserializer(PullEvent.class, new PullDeserializer());
-        module.addDeserializer(ForkEvent.class, new ForkDeserializer());
+        module.addDeserializer(RepoEvent.class, new RepoEventDeserializer());
         mapper.registerModule(module);
     }
 
@@ -48,33 +39,31 @@ public class LiveEventsRepository extends BaseEventsRepository {
     ) {
         String uriPrefix = "https://api.github.com/repos/" + ownerUsername + "/" + repoName;
 
+        lastUpdatedTime = System.currentTimeMillis();
+
+        Observable.interval(period, unit)
+                .subscribeOn(Schedulers.io())
+                .flatMap(intervalEvent ->
+                        Observable.fromIterable(getRepoEvents(uriPrefix))
+                                .filter(repoEvent -> repoEvent.eventType != EventType.IGNORE)
+                                .filter(repoEvent -> repoEvent.eventTime > lastUpdatedTime)
+                                .map(repoEvent -> new Event(repoEvent.author, repoEvent.eventType))
+                                .doOnNext(onNextEvent::onNext)
+                                .doOnComplete(() -> {
+                                    logger.info("update lastUpdatedTime");
+                                    lastUpdatedTime = System.currentTimeMillis();
+                                })
+                )
+                .subscribe();
 
         return onNextEvent;
-
-//        return Observable.fromIterable(gitHubEvents)
-//                .sorted(Comparator.comparingLong(o -> o.eventTime))
-//                .map(gitHubEvent -> new Event(gitHubEvent.author, gitHubEvent.eventType))
-//                .toList()
-//                .blockingGet();
     }
 
     @SneakyThrows
-    private List<CommitEvent> getRepoEvents(@NonNull String uriPrefix) {
-        return readFromRemote(buildUrl(uriPrefix, "/events"), new TypeReference<List<CommitEvent>>() {
+    private List<RepoEvent> getRepoEvents(@NonNull String uriPrefix) {
+        logger.info("call getRepoEvents");
+        return readFromRemote(buildUrl(uriPrefix, "/events?access_token=c9e7385407b091031a56de20d1187a39b6040f8c"), new TypeReference<List<RepoEvent>>() {
         });
-    }
-
-    @SneakyThrows
-    private <T> List<T> readFromRemote(URL url, TypeReference<List<T>> typeReference) {
-        logger.info("Start read " + url);
-        List<T> list = mapper.readValue(url, typeReference);
-        logger.info("End read " + url);
-        return list;
-    }
-
-    @SneakyThrows
-    private URL buildUrl(String uriPrefix, String address) {
-        return new URL(uriPrefix + address);
     }
 
 }

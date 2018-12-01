@@ -20,7 +20,7 @@ public class EventToLightTransformerServiceImpl implements EventToLightTransform
         switch (event.getEventType()) {
             case COMMIT:
                 return getPersonalColor(event);
-            case PULL:
+            case PULL_REQUEST:
                 return PULL_COLOR;
         }
         return DEFAULT_COLOR;

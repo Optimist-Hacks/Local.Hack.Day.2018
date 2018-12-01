@@ -1,6 +1,8 @@
 package ledmein.service;
 
+import ledmein.repository.eventsRepositiry.EventsRepository;
 import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
+import ledmein.repository.eventsRepositiry.LiveEventsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +17,16 @@ public class GitHubService {
     private static Logger logger = LoggerFactory.getLogger(GitHubService.class);
 
 
-    private final HistoryEventsRepository historyEventsRepository;
+    private final EventsRepository eventsRepository;
 
     @Autowired
-    public GitHubService(HistoryEventsRepository historyEventsRepository) {
-        this.historyEventsRepository = historyEventsRepository;
+    public GitHubService(LiveEventsRepository eventsRepository) {
+        this.eventsRepository = eventsRepository;
     }
 
     @PostConstruct
     public void post() {
-        historyEventsRepository.onNextEvent("square", "okhttp", 1, TimeUnit.SECONDS)
+        eventsRepository.onNextEvent("otopba", "TcTest", 5, TimeUnit.SECONDS)
                 .doOnNext(event -> logger.info(event.toString()))
                 .subscribe();
     }
