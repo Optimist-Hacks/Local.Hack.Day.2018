@@ -1,9 +1,10 @@
-package ledmein.repository.eventRepositiry;
+package ledmein.repository.eventsRepositiry;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import ledmein.deserializers.CommitDeserializer;
 import ledmein.deserializers.ForkDeserializer;
 import ledmein.deserializers.PullDeserializer;
@@ -22,15 +23,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Repository
-public class DefaultEventRepository implements EventRepository {
+public class HistoryEventsRepository extends BaseEventsRepository {
 
-    private static Logger logger = LoggerFactory.getLogger(DefaultEventRepository.class);
-    private final ObjectMapper mapper;
+    private static Logger logger = LoggerFactory.getLogger(HistoryEventsRepository.class);
 
-    public DefaultEventRepository() {
-        mapper = new ObjectMapper();
+    int currentEventIndex;
+
+    @NonNull
+    private List<Event> events;
+
+    public HistoryEventsRepository() {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(CommitEvent.class, new CommitDeserializer());
         module.addDeserializer(PullEvent.class, new PullDeserializer());
@@ -39,20 +44,35 @@ public class DefaultEventRepository implements EventRepository {
     }
 
     @Override
-    public List<Event> getEvents(@NonNull String ownerUsername, @NonNull String repoName) {
-        String uriPrefix = "https://api.github.com/repos/" + ownerUsername + "/" + repoName;
+    public Observable<Event> onNextEvent(@NonNull String ownerUsername, @NonNull String repoName) {
+        return Completable.fromAction(() -> {
+            String uriPrefix = "https://api.github.com/repos/" + ownerUsername + "/" + repoName;
 
-        List<GitHubEvent> gitHubEvents = new ArrayList<>();
+            List<GitHubEvent> gitHubEvents = new ArrayList<>();
 
-        gitHubEvents.addAll(getCommits(uriPrefix));
-        gitHubEvents.addAll(getPulls(uriPrefix));
-        gitHubEvents.addAll(getForks(uriPrefix));
+            gitHubEvents.addAll(getCommits(uriPrefix));
+            gitHubEvents.addAll(getPulls(uriPrefix));
+            gitHubEvents.addAll(getForks(uriPrefix));
 
-        return Observable.fromIterable(gitHubEvents)
-                .sorted(Comparator.comparingLong(o -> o.eventTime))
-                .map(gitHubEvent -> new Event(gitHubEvent.author, gitHubEvent.eventType))
-                .toList()
-                .blockingGet();
+            Observable.fromIterable(gitHubEvents)
+                    .sorted(Comparator.comparingLong(o -> o.eventTime))
+                    .map(gitHubEvent -> new Event(gitHubEvent.author, gitHubEvent.eventType))
+                    .toList()
+                    .flatMapObservable(events -> {
+                        currentEventIndex = 0;
+                        this.events = events;
+
+                        return Observable.interval(1, TimeUnit.SECONDS)
+                                .doOnNext(event -> {
+                                    if (currentEventIndex >= this.events.size()) {
+                                        onNextEvent.onComplete();
+                                    } else {
+                                        onNextEvent.onNext(this.events.get(currentEventIndex++));
+                                    }
+                                });
+                    }).subscribe();
+        }).subscribeOn(Schedulers.io())
+                .andThen(onNextEvent);
     }
 
     @SneakyThrows

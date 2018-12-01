@@ -1,7 +1,8 @@
 package ledmein.controller;
 
 import io.reactivex.Observable;
-import ledmein.repository.eventRepositiry.DefaultEventRepository;
+import ledmein.repository.eventsRepositiry.EventsRepository;
+import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
 import ledmein.service.ArduinoService;
 import ledmein.service.EventToLightTransformerService;
 import ledmein.service.EventToLightTransformerServiceImpl;
@@ -21,12 +22,12 @@ public class TestController {
 
     private static Logger logger = LoggerFactory.getLogger(TestController.class);
 
-    private final DefaultEventRepository repository;
+    private final EventsRepository repository;
     private final EventToLightTransformerServiceImpl service;
     private final ArduinoService arduinoService;
 
     @Autowired
-    public TestController(DefaultEventRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
+    public TestController(HistoryEventsRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
         this.repository = repository;
         this.service = service;
         this.arduinoService = arduinoService;
@@ -45,7 +46,7 @@ public class TestController {
     @GetMapping("/test_github")
     public String testGithub(HttpServletRequest request) {
         logger.info("New test Github request");
-        List<Color> colors = Observable.fromIterable(repository.getEvents("square", "okhttp"))
+        List<Color> colors = Observable.fromIterable(repository.onNextEvent("square", "okhttp"))
                 .map(event -> service.transformToRGB(event))
                 .toList()
                 .blockingGet();

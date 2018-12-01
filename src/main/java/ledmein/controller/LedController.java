@@ -1,8 +1,8 @@
 package ledmein.controller;
 
 import io.reactivex.disposables.Disposable;
-import ledmein.repository.eventRepositiry.DefaultEventRepository;
-import ledmein.repository.eventRepositiry.EventRepository;
+import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
+import ledmein.repository.eventsRepositiry.EventsRepository;
 import ledmein.service.ArduinoService;
 import ledmein.service.EventToLightTransformerServiceImpl;
 import ledmein.util.Lights;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LedController {
 
     private static Logger logger = LoggerFactory.getLogger(LedController.class);
-    private EventRepository repository;
+    private EventsRepository repository;
     private EventToLightTransformerServiceImpl service;
     private ArduinoService arduinoService;
 
@@ -26,7 +26,7 @@ public class LedController {
     private Disposable onNextEventDisposable;
 
     @Autowired
-    public LedController(DefaultEventRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
+    public LedController(HistoryEventsRepository repository, EventToLightTransformerServiceImpl service, ArduinoService arduinoService) {
         this.repository = repository;
         this.service = service;
         this.arduinoService = arduinoService;

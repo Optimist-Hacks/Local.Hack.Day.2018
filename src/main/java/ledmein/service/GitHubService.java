@@ -1,7 +1,7 @@
 package ledmein.service;
 
 import ledmein.model.Event;
-import ledmein.repository.eventRepositiry.DefaultEventRepository;
+import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,18 +11,18 @@ import java.util.List;
 @Service
 public class GitHubService {
 
-    private final DefaultEventRepository defaultEventRepository;
+    private final HistoryEventsRepository historyEventsRepository;
 
     @Autowired
-    public GitHubService(DefaultEventRepository defaultEventRepository) {
-        this.defaultEventRepository = defaultEventRepository;
+    public GitHubService(HistoryEventsRepository historyEventsRepository) {
+        this.historyEventsRepository = historyEventsRepository;
     }
 
     @PostConstruct
     public void post() {
-        List<Event> events = defaultEventRepository.getEvents("square", "okhttp");
+//        List<Event> events = historyEventsRepository.onNextEvents("square", "okhttp");
 
-        events.size();
+//        events.size();
     }
 
 }
