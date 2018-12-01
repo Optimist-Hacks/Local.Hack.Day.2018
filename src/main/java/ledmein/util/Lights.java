@@ -9,7 +9,7 @@ public interface Lights {
 
 
     Color DEFAULT_COLOR = Color.white;
-    Color PULL_COLOR = Color.red;
+    Color PULL_REQUEST_COLOR = Color.black;
     Color HISTORY_END_COLOR = Color.blue;
     Color BUILD_STARTED_COLOR = Color.yellow;
     Color BUILD_SUCCESS_COLOR = Color.green;
