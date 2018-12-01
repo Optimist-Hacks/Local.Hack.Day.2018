@@ -18,7 +18,7 @@ public class Com {
         Thread.sleep(1000);
 
         while (true) {
-            for(int i=0;i<=255;i+=1){
+            for (int i = 0; i <= 255; i += 1) {
                 long time1 = System.currentTimeMillis();
 
                 StringBuilder builder = new StringBuilder();

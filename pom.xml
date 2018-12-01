@@ -82,6 +82,22 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.arduino</groupId>
+            <artifactId>arduino</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/arduino.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jSerialComm</groupId>
+            <artifactId>jSerialComm</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jSerialComm-1.3.11.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
