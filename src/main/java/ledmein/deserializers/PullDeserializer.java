@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import ledmein.Dates;
-import ledmein.repository.model.PullEvent;
+import ledmein.model.github.PullEvent;
 
 import java.io.IOException;
 

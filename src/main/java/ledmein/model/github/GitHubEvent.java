@@ -1,4 +1,4 @@
-package ledmein.repository;
+package ledmein.model.github;
 
 import ledmein.model.EventType;
 import lombok.AllArgsConstructor;
