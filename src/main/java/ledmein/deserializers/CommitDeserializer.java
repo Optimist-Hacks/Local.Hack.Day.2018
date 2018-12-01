@@ -4,11 +4,12 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import ledmein.model.Commit;
+import ledmein.Dates;
+import ledmein.repository.model.CommitEvent;
 
 import java.io.IOException;
 
-public class CommitDeserializer extends StdDeserializer<Commit> {
+public class CommitDeserializer extends StdDeserializer<CommitEvent> {
 
     public CommitDeserializer() {
         this(null);
@@ -19,12 +20,12 @@ public class CommitDeserializer extends StdDeserializer<Commit> {
     }
 
     @Override
-    public Commit deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public CommitEvent deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         JsonNode commit = node.get("commit");
         JsonNode author = commit.get("author");
         JsonNode date = author.get("date");
-        return new Commit(Caledate.asText());
+        return new CommitEvent(Dates.formatDate(date.asText()));
     }
 
 }

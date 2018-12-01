@@ -18,7 +18,7 @@ public class GitHubService {
 
     @PostConstruct
     public void post() {
-        defaultEventRepository.getCommits("https://api.github.com/repos/polis-mail-ru/2018-highload-kv");
+        defaultEventRepository.getEvents("polis-mail-ru", "2018-highload-kv");
     }
 
 }
