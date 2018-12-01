@@ -1,6 +1,7 @@
 package ledmein.service;
 
 import arduino.Arduino;
+import ledmein.model.EventType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,40 @@ public class ArduinoService {
     private static final int SIZE = 2;
 
     private Arduino arduino;
+
+    public void writeEvent(EventType eventType){
+        byte res = 1;
+        switch (eventType) {
+            case COMMIT:
+                res = 9;
+                break;
+            case PULL_REQUEST:
+                res = 1;
+                break;
+            case FORK:
+                res = 2;
+                break;
+            case PUSH:
+                res = 3;
+                break;
+            case ISSUE:
+                res = 4;
+                break;
+            case IGNORE:
+                res = 5;
+                break;
+            case BUILD_STARTED:
+                res = 6;
+                break;
+            case BUILD_SUCCESS:
+                res = 7;
+                break;
+            case BUILD_FAILED:
+                res = 8;
+                break;
+        }
+        arduino.serialWrite((char) res);
+    }
 
     public void writeColor(Color color) {
         int red = Math.max(1, color.getRed());
