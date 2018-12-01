@@ -17,4 +17,8 @@ public class DefaultAuthorsColorsRepository implements AuthorsColorsRepository {
     public HashMap<String, Color> getAuthorsColors() {
         return authorsColors;
     }
+
+    public Color getColorByAuthor(String author) {
+        return authorsColors.get(author);
+    }
 }
