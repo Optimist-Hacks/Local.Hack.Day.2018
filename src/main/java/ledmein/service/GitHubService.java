@@ -1,15 +1,18 @@
 package ledmein.service;
 
-import ledmein.model.Event;
 import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 
 @Service
 public class GitHubService {
+
+    private static Logger logger = LoggerFactory.getLogger(GitHubService.class);
+
 
     private final HistoryEventsRepository historyEventsRepository;
 
@@ -20,9 +23,9 @@ public class GitHubService {
 
     @PostConstruct
     public void post() {
-//        List<Event> events = historyEventsRepository.onNextEvents("square", "okhttp");
-
-//        events.size();
+        historyEventsRepository.onNextEvent("square", "okhttp")
+                .doOnNext(event -> logger.info(event.toString()))
+                .subscribe();
     }
 
 }
