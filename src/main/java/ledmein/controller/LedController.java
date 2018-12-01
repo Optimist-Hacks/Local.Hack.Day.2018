@@ -26,7 +26,7 @@ public class LedController {
     @GetMapping("/rgb")
     public int[][] rgb() {
         logger.info("New rgb request");
-        return EventToLightTransformerService.transformToString(EventToLightTransformerService.randomLightsList(10));
+        return null;
     }
 
     @GetMapping

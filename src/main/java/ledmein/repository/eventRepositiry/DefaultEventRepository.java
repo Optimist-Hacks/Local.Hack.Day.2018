@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.reactivex.Observable;
 import ledmein.deserializers.CommitDeserializer;
+import ledmein.deserializers.ForkDeserializer;
 import ledmein.deserializers.PullDeserializer;
 import ledmein.model.Event;
 import ledmein.model.github.CommitEvent;
+import ledmein.model.github.ForkEvent;
 import ledmein.model.github.GitHubEvent;
 import ledmein.model.github.PullEvent;
 import lombok.NonNull;
@@ -32,6 +34,7 @@ public class DefaultEventRepository implements EventRepository {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(CommitEvent.class, new CommitDeserializer());
         module.addDeserializer(PullEvent.class, new PullDeserializer());
+        module.addDeserializer(ForkEvent.class, new ForkDeserializer());
         mapper.registerModule(module);
     }
 
@@ -39,12 +42,13 @@ public class DefaultEventRepository implements EventRepository {
     public List<Event> getEvents(@NonNull String ownerUsername, @NonNull String repoName) {
         String uriPrefix = "https://api.github.com/repos/" + ownerUsername + "/" + repoName;
 
-        List<GitHubEvent> eventWrappers = new ArrayList<>();
+        List<GitHubEvent> gitHubEvents = new ArrayList<>();
 
-        eventWrappers.addAll(getCommits(uriPrefix));
-        eventWrappers.addAll(getPulls(uriPrefix));
+        gitHubEvents.addAll(getCommits(uriPrefix));
+        gitHubEvents.addAll(getPulls(uriPrefix));
+        gitHubEvents.addAll(getForks(uriPrefix));
 
-        return Observable.fromIterable(eventWrappers)
+        return Observable.fromIterable(gitHubEvents)
                 .sorted(Comparator.comparingLong(o -> o.eventTime))
                 .map(gitHubEvent -> new Event(gitHubEvent.author, gitHubEvent.eventType))
                 .toList()
@@ -60,6 +64,12 @@ public class DefaultEventRepository implements EventRepository {
     @SneakyThrows
     private List<PullEvent> getPulls(@NonNull String uriPrefix) {
         return readFromRemote(buildUrl(uriPrefix, "/pulls?state=all"), new TypeReference<List<PullEvent>>() {
+        });
+    }
+
+    @SneakyThrows
+    private List<ForkEvent> getForks(@NonNull String uriPrefix) {
+        return readFromRemote(buildUrl(uriPrefix, "/forks"), new TypeReference<List<ForkEvent>>() {
         });
     }
 
