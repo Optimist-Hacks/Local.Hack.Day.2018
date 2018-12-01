@@ -48,7 +48,8 @@ public class LedController {
             onNextEventDisposable = null;
         }
 
-        onNextEventDisposable = repository.onNextEvent(login, repo, 5, TimeUnit.SECONDS)
+        onNextEventDisposable = repository.onNextEvent(login, repo, 1, TimeUnit.SECONDS)
+                .doOnNext(event -> logger.info("Receive event in LedController: " + event.toString()))
                 .doOnNext(event -> logger.info(event.toString()))
                 .map(service::transformToRGB)
 
