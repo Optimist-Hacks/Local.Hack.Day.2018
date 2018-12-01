@@ -1,4 +1,4 @@
-package ledmein.repository;
+package ledmein.repository.eventRepositiry;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

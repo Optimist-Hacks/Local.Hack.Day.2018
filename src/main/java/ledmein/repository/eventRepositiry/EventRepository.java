@@ -1,4 +1,4 @@
-package ledmein.repository;
+package ledmein.repository.eventRepositiry;
 
 import ledmein.model.Event;
 import lombok.NonNull;

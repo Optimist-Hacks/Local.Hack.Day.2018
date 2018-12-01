@@ -1,7 +1,7 @@
 package ledmein.service;
 
 import ledmein.model.Event;
-import ledmein.repository.DefaultEventRepository;
+import ledmein.repository.eventRepositiry.DefaultEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
