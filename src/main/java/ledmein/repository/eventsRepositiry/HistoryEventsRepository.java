@@ -44,7 +44,12 @@ public class HistoryEventsRepository extends BaseEventsRepository {
     }
 
     @Override
-    public Observable<Event> onNextEvent(@NonNull String ownerUsername, @NonNull String repoName) {
+    public Observable<Event> onNextEvent(
+            @NonNull String ownerUsername,
+            @NonNull String repoName,
+            long period,
+            @NonNull TimeUnit unit
+    ) {
         return Completable.fromAction(() -> {
             String uriPrefix = "https://api.github.com/repos/" + ownerUsername + "/" + repoName;
 
@@ -62,7 +67,7 @@ public class HistoryEventsRepository extends BaseEventsRepository {
                         currentEventIndex = 0;
                         this.events = events;
 
-                        return Observable.interval(1, TimeUnit.SECONDS)
+                        return Observable.interval(period, unit)
                                 .doOnNext(event -> {
                                     if (currentEventIndex >= this.events.size()) {
                                         onNextEvent.onComplete();

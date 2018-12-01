@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class GitHubService {
@@ -23,7 +24,7 @@ public class GitHubService {
 
     @PostConstruct
     public void post() {
-        historyEventsRepository.onNextEvent("square", "okhttp")
+        historyEventsRepository.onNextEvent("square", "okhttp", 1, TimeUnit.SECONDS)
                 .doOnNext(event -> logger.info(event.toString()))
                 .subscribe();
     }

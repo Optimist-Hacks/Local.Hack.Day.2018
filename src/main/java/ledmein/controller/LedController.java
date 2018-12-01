@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.concurrent.TimeUnit;
+
 @Controller
 public class LedController {
 
@@ -45,7 +47,7 @@ public class LedController {
             onNextEventDisposable = null;
         }
 
-        onNextEventDisposable = repository.onNextEvent(login, repo)
+        onNextEventDisposable = repository.onNextEvent(login, repo, 1, TimeUnit.SECONDS)
                 .map(service::transformToRGB)
                 .doOnNext(arduinoService::writeColor)
                 .doOnComplete(()->arduinoService.writeColor(Lights.HISTORY_END_COLOR))

@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Repository
 public class LiveEventsRepository extends BaseEventsRepository {
@@ -39,7 +40,12 @@ public class LiveEventsRepository extends BaseEventsRepository {
     }
 
     @Override
-    public Observable<Event> onNextEvent(@NonNull String ownerUsername, @NonNull String repoName) {
+    public Observable<Event> onNextEvent(
+            @NonNull String ownerUsername,
+            @NonNull String repoName,
+            long period,
+            @NonNull TimeUnit unit
+    ) {
         String uriPrefix = "https://api.github.com/repos/" + ownerUsername + "/" + repoName;
 
 
