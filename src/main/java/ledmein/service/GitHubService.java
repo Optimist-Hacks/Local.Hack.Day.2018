@@ -3,6 +3,7 @@ package ledmein.service;
 import ledmein.repository.eventsRepositiry.EventsRepository;
 import ledmein.repository.eventsRepositiry.HistoryEventsRepository;
 import ledmein.repository.eventsRepositiry.LiveEventsRepository;
+import ledmein.repository.eventsRepositiry.TravisEventsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,14 @@ public class GitHubService {
     private final EventsRepository eventsRepository;
 
     @Autowired
-    public GitHubService(LiveEventsRepository eventsRepository) {
+    public GitHubService(TravisEventsRepository eventsRepository) {
         this.eventsRepository = eventsRepository;
     }
 
     @PostConstruct
     public void post() {
         eventsRepository.onNextEvent("otopba", "TcTest", 5, TimeUnit.SECONDS)
+//        eventsRepository.onNextEvent("AbramovGA", "epam-lab-java8-2018-09", 100, TimeUnit.MILLISECONDS)
                 .doOnNext(event -> logger.info(event.toString()))
                 .subscribe();
     }

@@ -6,5 +6,7 @@ public enum EventType {
     FORK,
     PUSH,
     ISSUE,
-    IGNORE
+    IGNORE,
+    BUILD_SUCCESS,
+    BUILD_FAILED
 }
